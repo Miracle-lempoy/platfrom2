@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Platfrom2</title>
+    <style>
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 1em;
+            animation: fadeIn 1.2s ease-out;
+        }
+
+        nav {
+            background-color: #333;
+            overflow: hidden;
+            animation: fadeIn 1.4s ease-out;
+        }
+
+        nav a {
+            float: left;
+            display: block;
+            color: white;
+            padding: 14px 20px;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        nav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        section {
+            padding: 20px;
+        }
+
+        input[type="text"], select {
+            padding: 10px;
+            width: 300px;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #videoContainer {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        iframe {
+            max-width: 100%;
+            height: 400px;
+        }
+
+        .calculator {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            max-width: 200px;
+            margin: 20px auto;
+        }
+
+        .calculator button {
+            padding: 20px;
+            font-size: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .calculator button:hover {
+            background-color: #45a049;
+        }
+
+        #calculatorDisplay {
+            grid-column: span 4;
+            padding: 10px;
+            font-size: 24px;
+            text-align: right;
+            background-color: #f4f4f4;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Platfrom2</h1>
+    </header>
+
+    <nav>
+    <a href="platfrom1.html">Platform1</a>
+        <a href="platfrom2.html">Platfrom2</a>
+        <a href="about.html">About</a>
+        <a href="services.html">dalam erorr</a>
+        <a href="blog.html">dalam erorr</a>
+    </nav>
+
+    <div class="container">
+        <section>
+            <h2>Hubungi Kami</h2>
+            <p>Silakan pilih kategori berikut untuk memulai pencarian atau tampilkan video YouTube atau Kalkulator:</p>
+
+            <select id="platform">
+                <option value="">Pilih...</option>
+                <option value="video">Video YouTube</option>
+                <option value="calculator">Kalkulator</option>
+            </select>
+
+            <!-- Input YouTube -->
+            <div id="youtubeInputContainer" style="display: none;">
+                <h3>Masukkan link YouTube:</h3>
+                <input type="text" id="youtubeLink" placeholder="Masukkan link YouTube">
+                <button onclick="tampilkanVideo('youtube')">Tampilkan Video YouTube</button>
+            </div>
+
+            <!-- Kalkulator -->
+            <div id="calculatorContainer" style="display: none;">
+                <div id="calculatorDisplay">0</div>
+                <div class="calculator">
+                    <button onclick="addToDisplay('1')">1</button>
+                    <button onclick="addToDisplay('2')">2</button>
+                    <button onclick="addToDisplay('3')">3</button>
+                    <button onclick="addToDisplay('+')">+</button>
+                    <button onclick="addToDisplay('4')">4</button>
+                    <button onclick="addToDisplay('5')">5</button>
+                    <button onclick="addToDisplay('6')">6</button>
+                    <button onclick="addToDisplay('-')">-</button>
+                    <button onclick="addToDisplay('7')">7</button>
+                    <button onclick="addToDisplay('8')">8</button>
+                    <button onclick="addToDisplay('9')">9</button>
+                    <button onclick="addToDisplay('*')">*</button>
+                    <button onclick="addToDisplay('0')">0</button>
+                    <button onclick="clearDisplay()">C</button>
+                    <button onclick="calculateResult()">=</button>
+                    <button onclick="addToDisplay('/')">/</button>
+                    <button onclick="addToDisplay('%')">%</button> <!-- Tombol persen -->
+                </div>
+            </div>
+
+            <div id="videoContainer"></div>
+        </section>
+    </div>
+
+    <script>
+        const platformSelect = document.getElementById('platform');
+        const youtubeInputContainer = document.getElementById('youtubeInputContainer');
+        const calculatorContainer = document.getElementById('calculatorContainer');
+        const videoContainer = document.getElementById('videoContainer');
+        const youtubeLinkInput = document.getElementById('youtubeLink');
+
+        // Reset tampilan dan input saat memilih platform
+        platformSelect.addEventListener('change', function() {
+            const selectedPlatform = platformSelect.value;
+
+            if (selectedPlatform === 'video') {
+                youtubeInputContainer.style.display = 'block';
+                calculatorContainer.style.display = 'none';
+            } else if (selectedPlatform === 'calculator') {
+                youtubeInputContainer.style.display = 'none';
+                calculatorContainer.style.display = 'block';
+            } else {
+                youtubeInputContainer.style.display = 'none';
+                calculatorContainer.style.display = 'none';
+            }
+        });
+
+        function tampilkanVideo(platform) {
+            let videoLink = youtubeLinkInput.value.trim();
+
+            if (!videoLink) {
+                alert("Mohon masukkan link video.");
+                return;
+            }
+
+            const videoId = extractVideoId(platform, videoLink);
+
+            if (videoId) {
+                const iframe = document.createElement('iframe');
+                iframe.src = `https://www.youtube.com/embed/${videoId}`;
+                iframe.frameBorder = '0';
+                iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+                iframe.allowFullscreen = true;
+                videoContainer.innerHTML = '';  // Clear previous content
+                videoContainer.appendChild(iframe);
+            } else {
+                videoContainer.innerHTML = '<p>Link video tidak valid. Pastikan Anda memasukkan URL yang benar.</p>';
+            }
+        }
+
+        // Fungsi untuk mengekstrak ID video berdasarkan platform
+        function extractVideoId(platform, url) {
+            let regex = /(?:https?:\/\/(?:www\.)?youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+            const match = url.match(regex);
+            return match ? match[1] : null;
+        }
+
+        // Kalkulator Functions
+        let displayValue = '0';
+
+        function addToDisplay(value) {
+            if (displayValue === '0') {
+                displayValue = value;
+            } else {
+                displayValue += value;
+            }
+            document.getElementById('calculatorDisplay').textContent = displayValue;
+        }
+
+        function clearDisplay() {
+            displayValue = '0';
+            document.getElementById('calculatorDisplay').textContent = displayValue;
+        }
+
+        function calculateResult() {
+            try {
+                // Menambahkan fitur % untuk menghitung persentase
+                if (displayValue.includes('%')) {
+                    let parts = displayValue.split('%');
+                    let num = parseFloat(parts[0]);
+                    let percent = parseFloat(parts[1]);
+                    displayValue = (num * percent / 100).toString();
+                } else {
+                    displayValue = eval(displayValue).toString();
+                }
+                document.getElementById('calculatorDisplay').textContent = displayValue;
+            } catch (error) {
+                displayValue = 'Masukkan Angka yang Valid';
+                document.getElementById('calculatorDisplay').textContent = displayValue;
+            }
+        }
+
+        // Reset platform selection and input field after page reload (to clear any persistent data)
+        window.onload = function() {
+            platformSelect.selectedIndex = 0; // Reset the dropdown to "Pilih..."
+            youtubeInputContainer.style.display = 'none';
+            calculatorContainer.style.display = 'none';
+            videoContainer.innerHTML = ''; // Clear video container
+            youtubeLinkInput.value = ''; // Clear YouTube link input
+            displayValue = '0'; // Reset calculator
+            document.getElementById('calculatorDisplay').textContent = displayValue;
+        };
+    </script>
+</body>
+</html> 
