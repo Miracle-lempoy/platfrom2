@@ -126,6 +126,11 @@
             border: 1px solid #ccc;
             border-radius: 5px;
         }
+
+        .error {
+            color: red;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -134,9 +139,11 @@
     </header>
 
     <nav>
-        <a href="https://miracle-lempoy.github.io/platfrom1/">Platform1</a>
-        <a href="https://miracle-lempoy.github.io/platfrom2/">Platfrom2</a>
-        <a href="https://miracle-lempoy.github.io/about/">About</a>
+        <a href="platfrom1.html">Platform1</a>
+        <a href="platfrom2.html">Platfrom2</a>
+        <a href="about.html">About</a>
+        <a href="services.html">dalam erorr</a>
+        <a href="blog.html">dalam erorr</a>
     </nav>
 
     <div class="container">
@@ -242,47 +249,55 @@
         let displayValue = '0';
 
         function addToDisplay(value) {
-            if (displayValue === '0') {
-                displayValue = value;
-            } else {
-                displayValue += value;
+            // Hapus teks valid jika ada
+            if (displayValue === 'Masukkan Angka yang Valid') {
+                displayValue = '';
             }
-            document.getElementById('calculatorDisplay').textContent = displayValue;
+
+            // Hanya izinkan angka, operator, dan tanda titik
+            if (/[\d+\-*/.%]/.test(value)) {
+                // Tambahkan nilai ke layar kalkulator
+                displayValue += value;
+                document.getElementById('calculatorDisplay').textContent = displayValue;
+            }
         }
 
         function clearDisplay() {
+            // Reset display kalkulator
             displayValue = '0';
             document.getElementById('calculatorDisplay').textContent = displayValue;
         }
 
         function calculateResult() {
             try {
-                // Menambahkan fitur % untuk menghitung persentase
-                if (displayValue.includes('%')) {
-                    let parts = displayValue.split('%');
-                    let num = parseFloat(parts[0]);
-                    let percent = parseFloat(parts[1]);
-                    displayValue = (num * percent / 100).toString();
+                // Evaluasi hasil perhitungan
+                let result = eval(displayValue);
+                
+                // Jika hasilnya NaN atau tidak valid, tampilkan pesan error
+                if (isNaN(result)) {
+                    displayValue = 'Masukkan Angka yang Valid';
                 } else {
-                    displayValue = eval(displayValue).toString();
+                    displayValue = result.toString();
                 }
+                
                 document.getElementById('calculatorDisplay').textContent = displayValue;
             } catch (error) {
+                // Jika ada kesalahan saat evaluasi, tampilkan pesan error
                 displayValue = 'Masukkan Angka yang Valid';
                 document.getElementById('calculatorDisplay').textContent = displayValue;
             }
         }
 
-        // Reset platform selection and input field after page reload (to clear any persistent data)
+        // Reset platform selection dan input field setelah halaman dimuat (untuk menghapus data yang tersisa)
         window.onload = function() {
-            platformSelect.selectedIndex = 0; // Reset the dropdown to "Pilih..."
+            platformSelect.selectedIndex = 0; // Reset dropdown ke "Pilih..."
             youtubeInputContainer.style.display = 'none';
             calculatorContainer.style.display = 'none';
-            videoContainer.innerHTML = ''; // Clear video container
-            youtubeLinkInput.value = ''; // Clear YouTube link input
-            displayValue = '0'; // Reset calculator
+            videoContainer.innerHTML = ''; // Hapus konten video
+            youtubeLinkInput.value = ''; // Hapus input YouTube
+            displayValue = '0'; // Reset kalkulator
             document.getElementById('calculatorDisplay').textContent = displayValue;
         };
     </script>
 </body>
-</html> 
+</html>
